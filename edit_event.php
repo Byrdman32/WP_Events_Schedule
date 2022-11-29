@@ -13,7 +13,7 @@
  */
 
 
-function add_event_to_db(): void {
+function edit_event_to_db(): void {
 
 
 	if (!empty($_POST)) {
@@ -31,7 +31,9 @@ function add_event_to_db(): void {
 			'show_end'  => $_POST['show_end'],
 			'title'     => $_POST['title']
 		);
-		$success=$wpdb->insert( $table_name, $data );
+
+        $where = array('id'=>$_POST['id']);
+		$success=$wpdb->update( $table_name, $data, $where);
 		if($success){
 			echo 'data has been saved' ;
 		} else {
@@ -40,6 +42,7 @@ function add_event_to_db(): void {
 	} else {
 		?>
 		<form method="post">
+            <label>ID: </label><input type="number" name="id" /><br />
 			<label>Start Date and Time (Y-m-d H:i): </label><input type="text" name="start_dnt" /><br />
 			<label>End Date and Time (Y-m-d H:i):</label><input type="text" name="end_dnt" /><br />
             <label>Lodge Event Name: </label><input type="text" name="event" /><br />
@@ -55,6 +58,6 @@ function add_event_to_db(): void {
 	}
 }
 
-echo "<h1>Add Event</h1>";
+echo "<h1>Edit Event</h1>";
 echo "<hr size='1'>";
-add_event_to_db();
+edit_event_to_db();

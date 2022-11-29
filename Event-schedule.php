@@ -53,6 +53,8 @@ function my_plugin_create_db(): void {
 function event_schedule_setup_menu(): void {
 	add_menu_page( 'Custom Plugin', 'Event Schedule', 'manage_options', 'event_schedule', 'about');
 	add_submenu_page('event_schedule', 'Add Event', 'Add Event', 'manage_options', 'add_event', 'add_event');
+	add_submenu_page('event_schedule', 'Edit Event', 'Edit Event', 'manage_options', 'edit_event', 'edit_event');
+	add_submenu_page('event_schedule', 'Delete Event', 'Delete Event', 'manage_options', 'delete_event', 'delete_event');
 	add_submenu_page('event_schedule', 'View Events', 'View Events', 'manage_options', 'view_events', 'view_events');
 }
 
@@ -65,6 +67,14 @@ function about(): void {
 
 function add_event(): void {
 	include "add_event.php";
+}
+
+function edit_event(): void {
+	include "edit_event.php";
+}
+
+function delete_event(): void {
+	include "delete_event.php";
 }
 
 function view_events(): void {
