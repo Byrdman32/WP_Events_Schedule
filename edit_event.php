@@ -20,17 +20,21 @@ function edit_event_to_db(): void {
 		global $wpdb;
 		$table_name = $wpdb->prefix . 'my_schedule';
 
-		$data = array(
-			'start_dnt' => $_POST['start_dnt'],
-			'end_dnt'   => $_POST['end_dnt'],
-            'event'     => $_POST['event'],
-			'loc'       => $_POST['loc'],
-			'show_pre'  => $_POST['show_pre'],
-			'show_mid'  => $_POST['show_mid'],
-			'show_post' => $_POST['show_post'],
-			'show_end'  => $_POST['show_end'],
-			'title'     => $_POST['title']
-		);
+        $data = array(
+	        $_POST['field'] => $_POST['updateValue']
+        );
+
+//		$data = array(
+//			'start_dnt' => $_POST['start_dnt'],
+//			'end_dnt'   => $_POST['end_dnt'],
+//            'event'     => $_POST['event'],
+//			'loc'       => $_POST['loc'],
+//			'show_pre'  => $_POST['show_pre'],
+//			'show_mid'  => $_POST['show_mid'],
+//			'show_post' => $_POST['show_post'],
+//			'show_end'  => $_POST['show_end'],
+//			'title'     => $_POST['title']
+//		);
 
         $where = array('id'=>$_POST['id']);
 		$success=$wpdb->update( $table_name, $data, $where);
@@ -43,15 +47,19 @@ function edit_event_to_db(): void {
 		?>
 		<form method="post">
             <label>ID: </label><input type="number" name="id" /><br />
-			<label>Start Date and Time (Y-m-d H:i): </label><input type="text" name="start_dnt" /><br />
-			<label>End Date and Time (Y-m-d H:i):</label><input type="text" name="end_dnt" /><br />
-            <label>Lodge Event Name: </label><input type="text" name="event" /><br />
-			<label>Event Name: </label><input type="text" name="title" /><br />
-			<label>Event Location: </label><input type="text" name="loc" /><br />
-			<label>Show Pre (0 = false, 1 = true): </label><input type="text" name="show_pre" /><br />
-			<label>Show Mid (0 = false, 1 = true): </label><input type="text" name="show_mid" /><br />
-			<label>Show Post (0 = false, 1 = true): </label><input type="text" name="show_post" /><br />
-			<label>Show End (0 = false, 1 = true): </label><input type="text" name="show_end" /><br />
+            <label>Field: </label>
+            <select id="field" name="field">
+                <option value="start_dnt">Start Date and Time (Y-m-d H:i)</option>
+                <option value="end_dnt">End Date and Time (Y-m-d H:i)</option>
+                <option value="event">Lodge Event Name</option>
+                <option value="title">Event Name</option>
+                <option value="loc">Event Location</option>
+                <option value="show_pre">Show Pre (0 = false, 1 = true)</option>
+                <option value="show_mid">Show Mid (0 = false, 1 = true)</option>
+                <option value="show_post">Show Post (0 = false, 1 = true)</option>
+                <option value="show_end">Show End (0 = false, 1 = true)</option>
+            </select>
+			<label>Value: </label><input type="text" name="updateValue" /><br />
 			<input type="submit">
 		</form>
 		<?php
