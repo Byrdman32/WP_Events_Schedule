@@ -42,6 +42,7 @@ function my_plugin_create_db(): void {
 	  	show_mid smallint(5) DEFAULT 0 NOT NULL,
 	  	show_post smallint(5) DEFAULT 0 NOT NULL,
 	  	show_end smallint(5) DEFAULT 0 NOT NULL,
+		event text NOT NULL,
 		UNIQUE KEY id (id)
 	) $charset_collate;";
 
@@ -49,38 +50,10 @@ function my_plugin_create_db(): void {
 	dbDelta( $sql );
 }
 
-function add_to_db(): void {
-	global $wpdb;
-	$table_name = $wpdb->prefix . 'my_schedule';
-
-	$start_dt = date( 'Y-m-d H:i', strtotime( "2023-01-13 17:30" ) );
-	$end_dt   = date( 'Y-m-d H:i', strtotime( "2023-01-13 20:00" ) );
-	$title = "Registration";
-	$loc   = "Reynolds Lobby";
-	$pre   = 0;
-	$mid   = 1;
-	$post  = 0;
-	$end   = 0;
-
-	$wpdb->insert( $table_name, array(
-		'id'        => null,
-		'start_dnt' => $start_dt,
-		'end_dnt'   => $end_dt,
-		'title'     => $title,
-		'loc'       => $loc,
-		'show_pre'  => $pre,
-		'show_mid'  => $mid,
-		'show_post' => $post,
-		'show_end'  => $end
-	) );
-}
-
-add_to_db();
-
 function event_schedule_setup_menu(): void {
 	add_menu_page( 'Custom Plugin', 'Event Schedule', 'manage_options', 'event_schedule', 'about');
 	add_submenu_page('event_schedule', 'Add Event', 'Add Event', 'manage_options', 'add_event', 'add_event');
-//	add_submenu_page('event_schedule', 'View Events', 'View Events', 'manage_options', 'view_events', 'view_events');
+	add_submenu_page('event_schedule', 'View Events', 'View Events', 'manage_options', 'view_events', 'view_events');
 }
 
 add_action('admin_menu', 'event_schedule_setup_menu');
@@ -94,6 +67,6 @@ function add_event(): void {
 	include "add_event.php";
 }
 
-//function view_events(): void {
-//	include "view_events.php";
-//}
+function view_events(): void {
+	include "view_events.php";
+}
