@@ -1,6 +1,6 @@
 <?php
 
-function event( $atts = array() ) {
+function event( $atts = array() ): string {
 
 	// Arguments
 	extract( shortcode_atts( array(
@@ -220,7 +220,7 @@ function event( $atts = array() ) {
 	return $Content;
 }
 
-function timeLogic( $month, $day, $year, $hour, $minute, $second ) {
+function timeLogic( $month, $day, $year, $hour, $minute, $second ): array {
 
 	$tempMin  = (int) $minute;
 	$tempHour = (int) $hour;
@@ -243,7 +243,7 @@ function timeLogic( $month, $day, $year, $hour, $minute, $second ) {
 	return array( $output, $min );
 }
 
-function timeToString( $month, $sHour, $sMin, $eHour, $eMin ) {
+function timeToString( $month, $sHour, $sMin, $eHour, $eMin ): array {
 
 	$tempMonth = '';
 	$tempTime  = '';
@@ -441,11 +441,19 @@ function timeToString( $month, $sHour, $sMin, $eHour, $eMin ) {
 	return array( $tempMonth, $tempTime, $tempTime2 );
 }
 
-function build_page( $event_name, $startDate, $endDate ) {
+function build_page(  $atts = array() ): string {
 
-	$startDate   = date( 'Y-m-d H:i', strtotime( $startDate ) );
-	$endDate     = date( 'Y-m-d H:i', strtotime( $endDate ) );
-	$currentDate = date( 'Y-m-d H:i' );
+	extract( shortcode_atts( array(
+		'event_name'    => 'event_name',        // Event Name
+		'startDate'     => 'startDate',         // Start Date
+		'endDate'       => 'endDate',           // End Date
+	), $atts ) );
+
+	$Content = "";
+
+	$startDate   = date( 'Y-m-d H:i:s', strtotime( $startDate ) );
+	$endDate     = date( 'Y-m-d H:i:s', strtotime( $endDate ) );
+	$currentDate = date( 'Y-m-d H:i:s' );
 
 	global $wpdb;
 	$table_name = $wpdb->prefix . 'my_schedule';
@@ -453,39 +461,41 @@ function build_page( $event_name, $startDate, $endDate ) {
 	$results = $wpdb->get_results( "SELECT * FROM $table_name" );
 
 	if ( ! empty( $results ) ) {
-		echo "<p style=\"font-size:1.25rem\">Friday</p>";
+		$Content .= "<p style=\"font-size:1.25rem\">Friday</p>";
 		foreach ( $results as $row ) {
-			if ( $row->event_name == $event_name ) {
-				if ( $row->start_date == $startDate ) {
-					if ( ! ( $row->start_date < $currentDate && $row->end_date > $currentDate ) ) {
-						echo buildShort( $row->start_date, $row->end_date, $row->title, $row->loc, $row->show_pre, $row->show_mid, $row->show_post, $row->show_end ) . "\r\n";
+			if ( $row->event == $event_name ) {
+				if ( date( 'Y-m-d', strtotime($row->start_dnt)) == date( 'Y-m-d', strtotime($startDate)) ) {
+					if ( $row->end_dnt > $currentDate ) {
+						$Content .= buildShort( $row->start_dnt, $row->end_dnt, $row->title, $row->loc, $row->show_pre, $row->show_mid, $row->show_post, $row->show_end ) . "\r\n";
 					}
 				}
 			}
 		}
 
-		echo "<p style=\"font-size:1.25rem\">Saturday</p>";
+		$Content .= "<p style=\"font-size:1.25rem\">Saturday</p>";
 		foreach ( $results as $row ) {
-			if ( $row->event_name == $event_name ) {
-				if ( $row->start_date == date('Y-m-d H:i', strtotime($startDate. ' + 1 days')) ) {
-					if ( ! ( $row->start_date < $currentDate && $row->end_date > $currentDate ) ) {
-						echo buildShort( $row->start_date, $row->end_date, $row->title, $row->loc, $row->show_pre, $row->show_mid, $row->show_post, $row->show_end ) . "\r\n";
+			if ( $row->event == $event_name ) {
+				if ( date( 'Y-m-d', strtotime($row->start_dnt)) == date('Y-m-d', strtotime($startDate. ' + 1 days')) ) {
+					if ( $row->end_dnt > $currentDate ) {
+						$Content .= buildShort( $row->start_dnt, $row->end_dnt, $row->title, $row->loc, $row->show_pre, $row->show_mid, $row->show_post, $row->show_end ) . "\r\n";
 					}
 				}
 			}
 		}
 
-		echo "<p style=\"font-size:1.25rem\">Sunday</p>";
+		$Content .= "<p style=\"font-size:1.25rem\">Sunday</p>";
 		foreach ( $results as $row ) {
-			if ( $row->event_name == $event_name ) {
-				if ( $row->start_date == $endDate ) {
-					if ( ! ( $row->start_date < $currentDate && $row->end_date > $currentDate ) ) {
-						echo buildShort( $row->start_date, $row->end_date, $row->title, $row->loc, $row->show_pre, $row->show_mid, $row->show_post, $row->show_end ) . "\r\n";
+			if ( $row->event == $event_name ) {
+				if ( date( 'Y-m-d', strtotime($row->start_dnt)) == date( 'Y-m-d', strtotime($endDate)) ) {
+					if ( $row->end_dnt > $currentDate ) {
+						$Content .= buildShort( $row->start_dnt, $row->end_dnt, $row->title, $row->loc, $row->show_pre, $row->show_mid, $row->show_post, $row->show_end ) . "\r\n";
 					}
 				}
 			}
 		}
 	}
+
+	return $Content;
 }
 
 function buildShort( $start_dnt, $end_dnt, $title, $loc, $show_pre, $show_mid, $show_post, $show_end ): string {
@@ -538,4 +548,7 @@ function buildShort( $start_dnt, $end_dnt, $title, $loc, $show_pre, $show_mid, $
 	return $output;
 }
 
-build_page('LLD', '2023-01-13 17:30', '2023-01-15 11:00');
+add_shortcode('custom-event', 'event');
+add_shortcode('all-events', 'build_page');
+
+//echo build_page( array ( 'event_name' => 'LLD ', 'startDate' => '2023-01-13 17:30', 'endDate' => '2023-01-15 11:00' ));

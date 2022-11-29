@@ -4,7 +4,7 @@
 Plugin Name: Event Scheduler
 Plugin URI: https://github.com/Byrdman32/WP_Events_Schedule
 Description: Custom WordPress Plugin that generates a schedule for your event.
-Version: 0.2
+Version: 0.3
 Author: Eli Byrd
 Author URI: https://github.com/Byrdman32
 License: GPL2 or later
@@ -56,7 +56,7 @@ function event_schedule_setup_menu(): void {
 	add_submenu_page('event_schedule', 'Edit Event', 'Edit Event', 'manage_options', 'edit_event', 'edit_event');
 	add_submenu_page('event_schedule', 'Delete Event', 'Delete Event', 'manage_options', 'delete_event', 'delete_event');
 	add_submenu_page('event_schedule', 'View Events', 'View Events', 'manage_options', 'view_events', 'view_events');
-	add_submenu_page('event_schedule', 'View Shortcode', 'View Shortcode', 'manage_options', 'view_shortcode', 'view_shortcode');
+//	add_submenu_page('event_schedule', 'View Shortcode', 'View Shortcode', 'manage_options', 'view_shortcode', 'view_shortcode');
 }
 
 add_action('admin_menu', 'event_schedule_setup_menu');
@@ -82,8 +82,11 @@ function view_events(): void {
 	include "view_events.php";
 }
 
-function view_shortcode(): void {
-	include "shortcode.php";
-}
+//function view_shortcode(): void {
+//	include "shortcode.php";
+//}
 
-//add_shortcode('build-page', 'build_page');
+include "shortcode.php";
+
+add_shortcode('custom-event', 'event');
+add_shortcode('all-events', 'build_page');
